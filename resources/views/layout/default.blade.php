@@ -21,6 +21,7 @@ License: You must have a valid license purchased only from themeforest(the above
         {{-- Meta Data --}}
         <meta name="description" content="@yield('page_description', $page_description ?? '')"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         {{-- Favicon --}}
         <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
@@ -56,11 +57,25 @@ License: You must have a valid license purchased only from themeforest(the above
         <script>
             var KTAppSettings = {!! json_encode(config('layout.js'), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES) !!};
         </script>
-
         {{-- Global Theme JS Bundle (used by all pages)  --}}
         @foreach(config('layout.resources.js') as $script)
             <script src="{{ asset($script) }}" type="text/javascript"></script>
         @endforeach
+    <script>
+                    function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
+		      try {
+		        decimalCount = Math.abs(decimalCount);
+		        decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+		        const negativeSign = amount < 0 ? "-" : "";
+		        let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+		        let j = (i.length > 3) ? i.length % 3 : 0;
+		        return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+		      } catch (e) {
+		        console.log(e)
+		      }
+		    }
+    </script>
+<script src="{{ asset('js/pages/features/miscellaneous/toastr.js') }}"></script>
 
         {{-- Includable JS --}}
         @yield('scripts')
